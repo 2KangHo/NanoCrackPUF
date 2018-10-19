@@ -13,7 +13,7 @@ def Test():
     filtered_img1 = cv2.Canny(filtered_img1, 350, 360, apertureSize=5)
     #filtered_img2 = ndimage.gaussian_laplace(img2, sigma=1)
 
-    lines1 = cv2.HoughLinesP(filtered_img1, 1, np.pi/360, 70, 300, 9)
+    lines1 = cv2.HoughLinesP(filtered_img1, 1, np.pi/360, 140, 250, 10)
 
     for i in range(len(lines1)):
         for x1,y1,x2,y2 in lines1[i]:
