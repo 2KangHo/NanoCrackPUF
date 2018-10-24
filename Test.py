@@ -1,4 +1,5 @@
 from scipy import ndimage
+from scipy import signal
 import numpy as np
 import pandas as pd
 import cv2
@@ -32,10 +33,8 @@ def Test():
     blur_img1 = cv2.GaussianBlur(line_img1, (7,7), 10)
     blur_img2 = cv2.GaussianBlur(line_img2, (7,7), 10)
 
-    df1 = pd.DataFrame(blur_img1)
-    df2 = pd.DataFrame(blur_img2)
-    df1.corrwith(df2)
-    print(df1)
+    cc = signal.correlate2d(blur_img1, blur_img2)
+    print(cc)
 
     #cv2.imshow('filtered iamge 1', filtered_img1)
     cv2.imshow('blurred lines 1', blur_img1)
