@@ -8,13 +8,13 @@ import cv2
 import matplotlib.pyplot as plt
 
 def Test():
-    img1 = cv2.imread('img/1-1.tif', cv2.IMREAD_GRAYSCALE)
+    img1 = cv2.imread('img/1-1.jpg', cv2.IMREAD_GRAYSCALE)
     img1 = cv2.resize(img1, (512,512), interpolation=cv2.INTER_AREA)
     filtered_img1 = ndimage.gaussian_laplace(img1, sigma=2)
     filtered_img1 = cv2.Canny(filtered_img1, 200, 256, apertureSize=7)
     lines1 = cv2.HoughLinesP(filtered_img1, 1, np.pi/360, 120, 150, 5)
 
-    img2 = cv2.imread('img/1-2.tif', cv2.IMREAD_GRAYSCALE)
+    img2 = cv2.imread('img/1-2.jpg', cv2.IMREAD_GRAYSCALE)
     img2 = cv2.resize(img2, (512,512), interpolation=cv2.INTER_AREA)
     filtered_img2 = ndimage.gaussian_laplace(img2, sigma=2)
     filtered_img2 = cv2.Canny(filtered_img2, 200, 256, apertureSize=7)
@@ -79,9 +79,9 @@ def Test():
     #     for j in range(num_lines2):
     #         mat_slopes2[i][j] = slopes2[i] - slopes2[j]
 
-    cv2.imshow('filter3', filtered_img3)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow('filter3', filtered_img3)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     cor1 = np.correlate(slopes1, slopes1, mode='full')
     cor2 = np.correlate(slopes2, slopes2, mode='full')
@@ -90,10 +90,13 @@ def Test():
     # ccorr = signal.correlate2d(mat_slopes1, mat_slopes2, mode='full')
     # plt.hist(cor1, bins=50)
     fig = plt.figure()
-    ax1 = fig.add_subplot(121)
+    ax1 = fig.add_subplot(221)
     stats.probplot(cor1, plot=plt)
     stats.probplot(cor2, plot=plt)
-    ax2 = fig.add_subplot(122)
+    ax2 = fig.add_subplot(222)
+    stats.probplot(cor1, plot=plt)
+    stats.probplot(cor3, plot=plt)
+    ax3 = fig.add_subplot(223)
     stats.probplot(cor3, plot=plt)
     stats.probplot(cor4, plot=plt)
     plt.show()
