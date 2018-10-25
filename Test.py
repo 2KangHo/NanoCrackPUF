@@ -20,6 +20,12 @@ def Test():
     filtered_img2 = cv2.Canny(filtered_img2, 200, 256, apertureSize=7)
     lines2 = cv2.HoughLinesP(filtered_img2, 1, np.pi/360, 120, 150, 5)
 
+    img2_1 = cv2.imread('img/1-2-270r.jpg', cv2.IMREAD_GRAYSCALE)
+    img2_1 = cv2.resize(img2_1, (512,512), interpolation=cv2.INTER_AREA)
+    filtered_img2_1 = ndimage.gaussian_laplace(img2_1, sigma=2)
+    filtered_img2_1 = cv2.Canny(filtered_img2_1, 200, 256, apertureSize=7)
+    lines2_1 = cv2.HoughLinesP(filtered_img2_1, 1, np.pi/360, 120, 150, 5)
+
     img3 = cv2.imread('img/2-1_a.jpg', cv2.IMREAD_GRAYSCALE)
     img3 = cv2.resize(img3, (512,512), interpolation=cv2.INTER_AREA)
     filtered_img3 = ndimage.gaussian_laplace(img3, sigma=2)
@@ -51,6 +57,12 @@ def Test():
     for i in range(num_lines2):
         for x1,y1,x2,y2 in lines2[i]:
             slopes2[i] = (y1-y2)/(x1-x2)
+    
+    num_lines2_1 = len(lines2_1)
+    slopes2_1 = np.zeros(num_lines2_1)
+    for i in range(num_lines2_1):
+        for x1,y1,x2,y2 in lines2_1[i]:
+            slopes2_1[i] = (y1-y2)/(x1-x2)
 
     num_lines3 = len(lines3)
     slopes3 = np.zeros(num_lines3)
@@ -66,6 +78,7 @@ def Test():
 
     slopes1.sort()
     slopes2.sort()
+    slopes2_1.sort()
     slopes3.sort()
     slopes4.sort()
 
@@ -85,6 +98,7 @@ def Test():
 
     cor1 = np.correlate(slopes1, slopes1, mode='full')
     cor2 = np.correlate(slopes2, slopes2, mode='full')
+    cor2_1 = np.correlate(slopes2_1, slopes2_1, mode='full')
     cor3 = np.correlate(slopes3, slopes3, mode='full')
     cor4 = np.correlate(slopes4, slopes4, mode='full')
     # ccorr = signal.correlate2d(mat_slopes1, mat_slopes2, mode='full')
@@ -94,9 +108,12 @@ def Test():
     stats.probplot(cor1, plot=plt)
     stats.probplot(cor2, plot=plt)
     ax2 = fig.add_subplot(222)
+    stats.probplot(cor2, plot=plt)
+    stats.probplot(cor2_1, plot=plt)
+    ax2 = fig.add_subplot(223)
     stats.probplot(cor1, plot=plt)
     stats.probplot(cor3, plot=plt)
-    ax3 = fig.add_subplot(223)
+    ax3 = fig.add_subplot(224)
     stats.probplot(cor3, plot=plt)
     stats.probplot(cor4, plot=plt)
     plt.show()
