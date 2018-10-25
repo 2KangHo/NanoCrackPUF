@@ -1,23 +1,36 @@
 from scipy import ndimage
 from scipy import signal
+from scipy import stats
 import numpy as np
 import pandas as pd
 import cv2
 
+import matplotlib.pyplot as plt
+
 def Test():
     img1 = cv2.imread('img/1-1.tif', cv2.IMREAD_GRAYSCALE)
-    img2 = cv2.imread('img/1-2.tif', cv2.IMREAD_GRAYSCALE)
     img1 = cv2.resize(img1, (512,512), interpolation=cv2.INTER_AREA)
-    img2 = cv2.resize(img2, (512,512), interpolation=cv2.INTER_AREA)
-
     filtered_img1 = ndimage.gaussian_laplace(img1, sigma=2)
-    filtered_img2 = ndimage.gaussian_laplace(img2, sigma=2)
     filtered_img1 = cv2.Canny(filtered_img1, 200, 256, apertureSize=7)
-    filtered_img2 = cv2.Canny(filtered_img2, 200, 256, apertureSize=7)
-
     lines1 = cv2.HoughLinesP(filtered_img1, 1, np.pi/360, 120, 150, 5)
+
+    img2 = cv2.imread('img/1-2.tif', cv2.IMREAD_GRAYSCALE)
+    img2 = cv2.resize(img2, (512,512), interpolation=cv2.INTER_AREA)
+    filtered_img2 = ndimage.gaussian_laplace(img2, sigma=2)
+    filtered_img2 = cv2.Canny(filtered_img2, 200, 256, apertureSize=7)
     lines2 = cv2.HoughLinesP(filtered_img2, 1, np.pi/360, 120, 150, 5)
 
+    img3 = cv2.imread('img/2-1_a.jpg', cv2.IMREAD_GRAYSCALE)
+    img3 = cv2.resize(img3, (512,512), interpolation=cv2.INTER_AREA)
+    filtered_img3 = ndimage.gaussian_laplace(img3, sigma=2)
+    filtered_img3 = cv2.Canny(filtered_img3, 200, 256, apertureSize=7)
+    lines3 = cv2.HoughLinesP(filtered_img3, 1, np.pi/360, 120, 150, 5)
+
+    img4 = cv2.imread('img/2-1_b.jpg', cv2.IMREAD_GRAYSCALE)
+    img4 = cv2.resize(img4, (512,512), interpolation=cv2.INTER_AREA)
+    filtered_img4 = ndimage.gaussian_laplace(img4, sigma=2)
+    filtered_img4 = cv2.Canny(filtered_img4, 200, 256, apertureSize=7)
+    lines4 = cv2.HoughLinesP(filtered_img4, 1, np.pi/360, 120, 150, 5)
 
     # TODO
     # 검출한 직선들의 기울기를 구하여 array를 만들고
@@ -33,26 +46,58 @@ def Test():
         for x1,y1,x2,y2 in lines1[i]:
             slopes1[i] = (y1-y2)/(x1-x2)
     
-    mat_slopes1 = np.zeros([num_lines1,num_lines1])
-    for i in range(num_lines1):
-        for j in range(num_lines1):
-            mat_slopes1[i][j] = slopes1[i] - slopes1[j]
-            
-
     num_lines2 = len(lines2)
     slopes2 = np.zeros(num_lines2)
     for i in range(num_lines2):
         for x1,y1,x2,y2 in lines2[i]:
             slopes2[i] = (y1-y2)/(x1-x2)
 
-    mat_slopes2 = np.zeros([num_lines2,num_lines2])
-    for i in range(num_lines2):
-        for j in range(num_lines2):
-            mat_slopes2[i][j] = slopes2[i] - slopes2[j]
+    num_lines3 = len(lines3)
+    slopes3 = np.zeros(num_lines3)
+    for i in range(num_lines3):
+        for x1,y1,x2,y2 in lines3[i]:
+            slopes3[i] = (y1-y2)/(x1-x2)
     
-    
-    ccorr = signal.correlate2d(mat_slopes1, mat_slopes2, mode='full')
-    print(ccorr)
+    num_lines4 = len(lines4)
+    slopes4 = np.zeros(num_lines4)
+    for i in range(num_lines4):
+        for x1,y1,x2,y2 in lines4[i]:
+            slopes4[i] = (y1-y2)/(x1-x2)
+
+    slopes1.sort()
+    slopes2.sort()
+    slopes3.sort()
+    slopes4.sort()
+
+    # mat_slopes1 = np.zeros([num_lines1,num_lines1])
+    # for i in range(num_lines1):
+    #     for j in range(num_lines1):
+    #         mat_slopes1[i][j] = slopes1[i] - slopes1[j]
+
+    # mat_slopes2 = np.zeros([num_lines2,num_lines2])
+    # for i in range(num_lines2):
+    #     for j in range(num_lines2):
+    #         mat_slopes2[i][j] = slopes2[i] - slopes2[j]
+
+    cv2.imshow('filter3', filtered_img3)
+
+    cor1 = np.correlate(slopes1, slopes1, mode='full')
+    cor2 = np.correlate(slopes2, slopes2, mode='full')
+    cor3 = np.correlate(slopes3, slopes3, mode='full')
+    cor4 = np.correlate(slopes4, slopes4, mode='full')
+    # ccorr = signal.correlate2d(mat_slopes1, mat_slopes2, mode='full')
+    # plt.hist(cor1, bins=50)
+    fig = plt.figure()
+    ax1 = fig.add_subplot(121)
+    stats.probplot(cor1, plot=plt)
+    stats.probplot(cor2, plot=plt)
+    ax2 = fig.add_subplot(122)
+    stats.probplot(cor3, plot=plt)
+    stats.probplot(cor4, plot=plt)
+    plt.show()
+
+    # print(cor1)
+    # print(ccorr)
     
 
 
