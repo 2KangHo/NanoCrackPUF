@@ -80,6 +80,8 @@ def Test():
     #         mat_slopes2[i][j] = slopes2[i] - slopes2[j]
 
     cv2.imshow('filter3', filtered_img3)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     cor1 = np.correlate(slopes1, slopes1, mode='full')
     cor2 = np.correlate(slopes2, slopes2, mode='full')
@@ -138,13 +140,8 @@ def Test():
 
     # cv2.imshow('ORB1', kpimg1)
     # cv2.imshow('ORB2', kpimg2)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
     ########################################################################
-
-
-
-
-    # cv2.imshow('filter1', filtered_img1)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
 
 Test()
